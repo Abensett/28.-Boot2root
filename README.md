@@ -1,7 +1,7 @@
-# Template
+# Boot2root
 
 ## Table of contents
-* [Goal](#Goal)  
+* [Goal](#Goal)
 * [Introduction](#Introduction)
 * [Takeaway](#Takeaway)
 * [Ressources](#Ressources)
@@ -11,15 +11,10 @@
 
 
 ### Introduction
-> 
+>
 
 ### Takeaway
 
-```C
-int main (void)
-{
-}
-```
 
 ### Ressources
-* 
+* https://stackoverflow.com/questions/33517708/how-to-change-grub-conf-after-adding-init-bin-bash

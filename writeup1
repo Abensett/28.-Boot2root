@@ -1,0 +1,8 @@
+1. Lorsque la machine virtuelle démarre, si nous appuyons sur la touche SHIFT, nous pouvons accéder au menu du chargeur d'amorçage (grub).
+
+2. Avec la touche TAB, nous pouvons obtenir la liste des partitions de démarrage, puis nous choisissons la bonne et la lançons avec le binaire init /bin/bash pour obtenir un shell root et contourner le démarrage normal.
+
+![alt text](image.png)
+
+
+* https://stackoverflow.com/questions/33517708/how-to-change-grub-conf-after-adding-init-bin-bash
