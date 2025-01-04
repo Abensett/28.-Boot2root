@@ -125,7 +125,9 @@ file fun
 ## 8. laurie
 
 * laurie:330b845f32185747e4f8ca15d40ca59796035c89ea809fb5d30f4da83ecf45a4
-
+```sh
+ssh laurie@192.168.56.101
+```
 1. On se connecte avec les identifiants, on obtient deux fichiers bomb et README
 ![alt text](/scripts/img/image-12.png)
 2. On télécharge le fichier bombe avec scp : `scp -p 22 laurie@192.168.56.101:/home/laurie/bomb .`

