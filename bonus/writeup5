@@ -1,2 +1,21 @@
-fakeroot
-* https://github.com/Lyphmeno/Boot2root/blob/main/Writeup4.md
+# Writeup5
+
+## fakeroot
+
+On exécute la command fakeroot :
+
+```
+laurie@BornToSecHackMe:~$ fakeroot
+root@BornToSecHackMe:~# id
+uid=0(root) gid=0(root) groups=0(root),1003(laurie)
+root@BornToSecHackMe:~# whoami
+root
+```
+
+Même si on n'obtient pas les droits root réels en utilisant cette astuce, cette solution respecte techniquement toutes les règles du sujet concernant ce qu'est root :
+*  The user id is 0
+*  We have a real terminal and we can execute 'whoami' which shows 'root'
+
+![alt text](../scripts/img/image-15.png)
+
+* https://manpages.ubuntu.com/manpages/trusty/fr/man1/fakeroot-tcp.1.html
